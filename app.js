@@ -1,14 +1,15 @@
 
 var express = require('express')
-  , config = require('./config')
+  , env = process.env.NODE_ENV || 'production'
+  , config = require('./config')[env]
   , passport = require('passport')
   , http = require('http')
   , path = require('path')
   , util = require('util')
   , FitbitStrategy = require('passport-fitbit').Strategy;
 
-var FITBIT_CONSUMER_KEY = "61b393fcee444af389dc08333aa66d1c";
-var FITBIT_CONSUMER_SECRET = "545a8367dd894e8cb884a6621ff62128";
+var FITBIT_CONSUMER_KEY = config.fitbitClientKey;  //"61b393fcee444af389dc08333aa66d1c";
+var FITBIT_CONSUMER_SECRET = config.fitbitClientSecret;  //"545a8367dd894e8cb884a6621ff62128";
 
 // Passport session setup.
 //   To support persistent login sessions, Passport needs to be able to
@@ -109,7 +110,7 @@ app.listen(port, function(){
   console.log("Listening on " + port);
 });
 
-console.log("key is " + FITBIT_CONSUMER_KEY);
+console.log(config.fitbitClientKey);
 
 // Simple route middleware to ensure user is authenticated.
 //   Use this route middleware on any resource that needs to be protected.  If
