@@ -7,8 +7,8 @@ var express = require('express')
   , util = require('util')
   , FitbitStrategy = require('passport-fitbit').Strategy;
 
-var FITBIT_CONSUMER_KEY = config.clientFitbitKey; //"61b393fcee444af389dc08333aa66d1c";
-var FITBIT_CONSUMER_SECRET = config.clientFitbitSecret; //"545a8367dd894e8cb884a6621ff62128";
+var FITBIT_CONSUMER_KEY = "61b393fcee444af389dc08333aa66d1c";
+var FITBIT_CONSUMER_SECRET = "545a8367dd894e8cb884a6621ff62128";
 
 // Passport session setup.
 //   To support persistent login sessions, Passport needs to be able to
