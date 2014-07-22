@@ -110,7 +110,6 @@ app.listen(port, function(){
   console.log("Listening on " + port);
 });
 
-console.log(config.fitbitClientKey);
 
 // Simple route middleware to ensure user is authenticated.
 //   Use this route middleware on any resource that needs to be protected.  If
