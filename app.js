@@ -1,5 +1,4 @@
-var env = process.env.NODE_ENV || 'production',
-  config = require('./config')[env];
+
 var express = require('express')
   , passport = require('passport')
   , http = require('http')
@@ -51,7 +50,6 @@ passport.use(new FitbitStrategy({
 var app = express();
 
 // configure Express
-app.set('port', process.env.PORT || 3000);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 app.use(express.cookieParser('healthsmartappisgreat'));
@@ -105,10 +103,10 @@ app.get('/logout', function(req, res){
   res.redirect('/');
 });
 
-http.createServer(app).listen(app.get('port'), function(){
-  console.log('Express server running on port' + app.get('port'));
+var port = Number(process.env.PORT || 5000);
+app.listen(port, function(){
+  console.log("Listening on " + port);
 });
-
 
 // Simple route middleware to ensure user is authenticated.
 //   Use this route middleware on any resource that needs to be protected.  If
