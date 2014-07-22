@@ -1,5 +1,6 @@
+var env = process.env.NODE_ENV || 'production',
+  config = require('./config')[env];
 var express = require('express')
-  , config = require('./config.js')
   , passport = require('passport')
   , http = require('http')
   , path = require('path')
@@ -50,6 +51,7 @@ passport.use(new FitbitStrategy({
 var app = express();
 
 // configure Express
+app.set('port', process.env.PORT || 3000);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 app.use(express.cookieParser('healthsmartappisgreat'));
@@ -103,7 +105,9 @@ app.get('/logout', function(req, res){
   res.redirect('/');
 });
 
-app.listen(3000);
+http:createServer(app).listen(app.get('port'), function(){
+  console.log('Express server running on port' + app.get('port'));
+});
 
 
 // Simple route middleware to ensure user is authenticated.
