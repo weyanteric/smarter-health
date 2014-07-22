@@ -6,8 +6,8 @@ var express = require('express')
   , util = require('util')
   , FitbitStrategy = require('passport-fitbit').Strategy;
 
-var FITBIT_CONSUMER_KEY = config.fitbitClientKey;
-var FITBIT_CONSUMER_SECRET = config.fitbitClientSecret;
+var FITBIT_CONSUMER_KEY = "61b393fcee444af389dc08333aa66d1c";
+var FITBIT_CONSUMER_SECRET = "545a8367dd894e8cb884a6621ff62128";
 
 // Passport session setup.
 //   To support persistent login sessions, Passport needs to be able to
@@ -32,7 +32,7 @@ passport.deserializeUser(function(obj, done) {
 passport.use(new FitbitStrategy({
     consumerKey: FITBIT_CONSUMER_KEY,
     consumerSecret: FITBIT_CONSUMER_SECRET,
-    callbackURL: config.host + "/auth/fitbit/callback"
+    callbackURL: "smarter-health.herokuapp.com/auth/fitbit/callback"
   },
   function(token, tokenSecret, profile, done) {
     // asynchronous verification, for effect...
