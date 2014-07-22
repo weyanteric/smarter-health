@@ -32,7 +32,7 @@ passport.deserializeUser(function(obj, done) {
 passport.use(new FitbitStrategy({
     consumerKey: FITBIT_CONSUMER_KEY,
     consumerSecret: FITBIT_CONSUMER_SECRET,
-    callbackURL: "127.0.0.1/auth/fitbit/callback"
+    callbackURL: "smarter-health.herokuapp.com/auth/fitbit/callback"
   },
   function(token, tokenSecret, profile, done) {
     // asynchronous verification, for effect...
