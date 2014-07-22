@@ -105,7 +105,7 @@ app.get('/logout', function(req, res){
   res.redirect('/');
 });
 
-http:createServer(app).listen(app.get('port'), function(){
+http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server running on port' + app.get('port'));
 });
 
