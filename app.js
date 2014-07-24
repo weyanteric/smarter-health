@@ -83,7 +83,7 @@ var User = mongoose.model('User', UserSchema);
 mongoose.connect(config.db);
 
 app.get('/', function(req, res){
-  res.render('index', { user: User.displayName });
+  res.render('index', { user: req.user });
 });
 
 app.get('/user', ensureAuthenticated, function(req, res){
@@ -93,7 +93,7 @@ app.get('/user', ensureAuthenticated, function(req, res){
 });
 
 app.get('/login', function(req, res){
-  res.render('login', { user: User.displayName });
+  res.render('login', { user: req.user });
 });
 
 // GET /auth/fitbit
