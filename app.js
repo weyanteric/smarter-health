@@ -88,7 +88,7 @@ app.get('/', function(req, res){
 
 app.get('/user', ensureAuthenticated, function(req, res){
   User.find(function(err, res) {
-    res.send(UserSchema);
+    res.send(User);
   })
 });
 
