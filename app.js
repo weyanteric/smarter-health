@@ -6,7 +6,10 @@ var express = require('express')
   , http = require('http')
   , path = require('path')
   , util = require('util')
+  , mongoose = require('mongoose')
   , FitbitStrategy = require('passport-fitbit').Strategy;
+
+var Schema = mongoose.Schema;
 
 var FITBIT_CONSUMER_KEY = config.fitbitClientKey;  //"61b393fcee444af389dc08333aa66d1c";
 var FITBIT_CONSUMER_SECRET = config.fitbitClientSecret;  //"545a8367dd894e8cb884a6621ff62128";
@@ -65,16 +68,32 @@ app.use(passport.session());
 app.use(app.router);
 app.use(express.static(__dirname + '/public'));
 
+// Connect to database and initialize model
+var UserSchema = new Schema({
+  encodedId: {type: String, required: true, index: true, unique: true},
+  accessToken: {type: String, required: true},
+  accessSecret: {type: String, required: true},
+  lastSync: Date,
+  weight: Number,
+  weightGoal: Number,
+  displayName: String,
+  timezoneOffset: Number
+});
+var User = mongoose.model('User', UserSchema);
+mongoose.connect(config.db);
+
 app.get('/', function(req, res){
-  res.render('index', { user: req.user });
+  res.render('index', { user: User.displayName });
 });
 
-app.get('/account', ensureAuthenticated, function(req, res){
-  res.render('account', { user: req.user });
+app.get('/user', ensureAuthenticated, function(req, res){
+  User.find(function(err, res) {
+    res.send(UserSchema);
+  })
 });
 
 app.get('/login', function(req, res){
-  res.render('login', { user: req.user });
+  res.render('login', { user: User.displayName });
 });
 
 // GET /auth/fitbit

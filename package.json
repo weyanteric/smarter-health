@@ -5,6 +5,8 @@
     "express": "3.4.2",
     "ejs": "*",
     "passport": "*",
-    "passport-fitbit": "*"
+    "passport-fitbit": "*",
+    "mongod": "*",
+    "mongoose": "*"
   }
 }
