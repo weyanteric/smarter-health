@@ -7,12 +7,16 @@ var express = require('express')
   , path = require('path')
   , util = require('util')
   , mongoose = require('mongoose')
+  , JawboneStrategy = require('passport-jawbone').Strategy
   , FitbitStrategy = require('passport-fitbit').Strategy;
 
 var Schema = mongoose.Schema;
 
 var FITBIT_CONSUMER_KEY = config.fitbitClientKey;  //"61b393fcee444af389dc08333aa66d1c";
 var FITBIT_CONSUMER_SECRET = config.fitbitClientSecret;  //"545a8367dd894e8cb884a6621ff62128";
+
+var JAWBONE_CONSUMER_KEY = config.jawboneClientKey; 
+var JAWBONE_CONSUMER_SECRET = config.jawboneClientSecret;
 
 // Passport session setup.
 //   To support persistent login sessions, Passport needs to be able to
@@ -52,6 +56,28 @@ passport.use(new FitbitStrategy({
   }
 ));
 
+// Use the FitbitStrategy within Passport.
+//   Strategies in passport require a `verify` function, which accept
+//   credentials (in this case, a token, tokenSecret, and Fitbit profile), and
+//   invoke a callback with a user object.
+passport.use(new JawboneStrategy({
+    consumerKey: JAWBONE_CONSUMER_KEY,
+    consumerSecret: JAWBONE_CONSUMER_SECRET,
+    callbackURL: "/auth/jawbone/callback"
+  },
+  function(token, tokenSecret, profile, done) {
+    // asynchronous verification, for effect...
+    process.nextTick(function () {
+      
+      // To keep the example simple, the user's Fitbit profile is returned to
+      // represent the logged-in user.  In a typical application, you would want
+      // to associate the Fitbit account with a user record in your database,
+      // and return that user instead.
+      return done(null, profile);
+    });
+  }
+));
+
 var app = express();
 
 // configure Express
@@ -69,27 +95,15 @@ app.use(app.router);
 app.use(express.static(__dirname + '/public'));
 
 // Connect to database and initialize model
-var UserSchema = new Schema({
-  encodedId: {type: String, required: true, index: true, unique: true},
-  accessToken: {type: String, required: true},
-  accessSecret: {type: String, required: true},
-  lastSync: Date,
-  weight: Number,
-  weightGoal: Number,
-  displayName: String,
-  timezoneOffset: Number
-});
-var User = mongoose.model('User', UserSchema);
 mongoose.connect(config.db);
+require('./models/user');
 
 app.get('/', function(req, res){
   res.render('index', { user: req.user });
 });
 
-app.get('/user', ensureAuthenticated, function(req, res){
-  User.find(function(err, res) {
-    res.send(User);
-  })
+app.get('/account', ensureAuthenticated, function(req, res){
+  res.render('account', { user: req.user });
 });
 
 app.get('/login', function(req, res){
@@ -115,6 +129,30 @@ app.get('/auth/fitbit',
 //   which, in this example, will redirect the user to the home page.
 app.get('/auth/fitbit/callback', 
   passport.authenticate('fitbit', { failureRedirect: '/login' }),
+  function(req, res) {
+    res.redirect('/');
+  });
+
+
+// GET /auth/jawbone
+//   Use passport.authenticate() as route middleware to authenticate the
+//   request.  The first step in Jawbone authentication will involve redirecting
+//   the user to jawbone.com.  After authorization, Jawbone will redirect the user
+//   back to this application at /auth/jawbone/callback
+app.get('/auth/jawbone',
+  passport.authenticate('jawbone'),
+  function(req, res){
+    // The request will be redirected to Fitbit for authentication, so this
+    // function will not be called.
+  });
+
+// GET /auth/fitbit/callback
+//   Use passport.authenticate() as route middleware to authenticate the
+//   request.  If authentication fails, the user will be redirected back to the
+//   login page.  Otherwise, the primary route function function will be called,
+//   which, in this example, will redirect the user to the home page.
+app.get('/auth/jawbone/callback', 
+  passport.authenticate('jawbone', { failureRedirect: '/login' }),
   function(req, res) {
     res.redirect('/');
   });
